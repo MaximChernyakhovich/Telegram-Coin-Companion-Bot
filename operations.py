@@ -1,10 +1,16 @@
 from icecream import ic
+from database import Database
+
 
 class Operations:
 
-    def __init__(self, db):
-        self.db = db
+    def __init__(self, tg_id: int):
+        self.tg_id = tg_id
 
+    # Подключение к БД
+    def db_connect(self):
+        return Database()
+    
     # расход
     def add_expense(self, user_id, amount, category):
         pass

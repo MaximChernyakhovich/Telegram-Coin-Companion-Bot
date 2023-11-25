@@ -4,17 +4,15 @@ import psycopg2
 class Database:
 
     def __init__(self):
-        self.connection = None
-        self.cursor = None
-
-    def __enter__(self):
         self.connection = psycopg2.connect("dbname=app \
                                            user=username \
                                            password=password \
                                            host=IP_or_Name \
                                            port=5432")
-        self.cursor = self.connection.cursor()
         print("Connected to the database.")
+
+    def __enter__(self):
+        return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
@@ -44,4 +42,4 @@ class Database:
             self.cursor.execute(query)
         return self.cursor.fetchall()
    
-#db = Database()
+# db = Database()

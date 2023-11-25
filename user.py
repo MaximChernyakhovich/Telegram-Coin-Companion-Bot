@@ -16,24 +16,31 @@ class User:
         return f"User ID: {self.tg_id}\nName: {self.firstname} {self.lastname}\nUsername: {self.tg_nick}"
 
     def create_profile(self):
-        pass
+        db = self.db_connect()
+
+        with db as conn:
+            user_query = '''
+            INSERT INTO users ("ID", "Firstname", "Lastname", "Nickname") 
+            VALUES (%s, %s, %s, %s); 
+            INSERT INTO balance ("user_id") 
+            VALUES (%s)
+            '''
+            user_params = (self.tg_id, self.firstname, self.lastname, self.tg_nick, self.tg_id)
+            db.execute_query(user_query, user_params)
 
     def fetch_user(self):
         db = self.db_connect()
 
         with db as conn:
-
+            # нужно заменить SQL-запросы на процедуры
             # проверка наличия пользователя в БД
-            check_id = db.fetch_data('''WITH local_id AS (
-                                            SELECT %s
-                                        )
+            check_id = db.fetch_data('''
                                         SELECT 
                                             CASE 
                                                 WHEN EXISTS (
                                                     SELECT "ID" 
                                                     FROM users 
-                                                    WHERE "ID" = (SELECT * 
-                                                                    FROM local_id)) 
+                                                    WHERE "ID" = (SELECT %s)) 
                                                 THEN 1
                                                 ELSE 0
                                             END''', 
@@ -45,10 +52,7 @@ class User:
                                         WHERE "ID" = %s''', (self.tg_id,))[0]
                 return data
             else:
-                # здесь будет выполняться функция create_profile для добавления пользователя в БД
-                pass
-
-
+                self.create_profile()
 
 user = User(tg_id=12345, firstname="Ivan", lastname="Ivanov", tg_nick="ivanivanov")
 
