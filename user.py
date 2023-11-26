@@ -19,14 +19,12 @@ class User:
         db = self.db_connect()
 
         with db as conn:
-            user_query = '''
-            INSERT INTO users ("ID", "Firstname", "Lastname", "Nickname") 
-            VALUES (%s, %s, %s, %s); 
-            INSERT INTO balance ("user_id") 
-            VALUES (%s)
-            '''
-            user_params = (self.tg_id, self.firstname, self.lastname, self.tg_nick, self.tg_id)
-            db.execute_query(user_query, user_params)
+            # вызов процедуры add_user
+            query = 'CALL add_user (%s, %s, %s, %s);'
+
+            user_params = (self.tg_id, self.firstname, self.lastname, self.tg_nick)
+            db.execute_query(query, user_params)
+            ic()
 
     def fetch_user(self):
         db = self.db_connect()
@@ -54,7 +52,7 @@ class User:
             else:
                 self.create_profile()
 
-user = User(tg_id=12345, firstname="Ivan", lastname="Ivanov", tg_nick="ivanivanov")
+user = User(tg_id=123, firstname="Ivan", lastname="Ivanov", tg_nick="ivanivanov")
 
 user_data = user.fetch_user()
 print(user_data)

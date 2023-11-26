@@ -30,7 +30,11 @@ class Database:
             self.cursor.execute(query, params)
         else:
             self.cursor.execute(query)
+
         self.connection.commit()
+
+        # получение статуса выполнения запроса
+        return self.connection.notices[0].split()[1]
         
     def fetch_data(self, query, params=None):
         if not self.connection or self.connection.closed != 0:
