@@ -24,8 +24,17 @@ class Operations:
         pass
 
     # проверка баланса
-    def check_balance(self, user_id):
-        pass
+    def check_balance(self):
+
+        db = self.db_connect()
+
+        with db as conn:
+            # вызов процедуры add_user
+            data = db.fetch_data('''
+                                 select money_amount 
+                                    from balance
+                                    where user_id = %s;''', (self.tg_id,))[0][0]
+            return data
     
     # вывод статистики за месяц
     def get_statistics(self, user_id, month):
@@ -51,3 +60,8 @@ class Operations:
     # пользователя чтобы не вводить текст с клавиатуры
     def user_comments (self, user_id):
         pass
+
+op = Operations(tg_id=12349)
+
+balance = op.check_balance()
+ic(balance)
