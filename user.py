@@ -36,18 +36,19 @@ class User:
                                         SELECT 
                                             CASE 
                                                 WHEN EXISTS (
-                                                    SELECT "ID" 
-                                                    FROM users 
-                                                    WHERE "ID" = (SELECT %s)) 
+                                                    SELECT id
+                                                    FROM users
+                                                    WHERE id = (SELECT %s)) 
                                                 THEN 1
                                                 ELSE 0
                                             END''', 
                                             (self.tg_id,))[0]
 
             if check_id[0] != 0:
-                data = db.fetch_data('''SELECT * 
-                                        FROM users 
-                                        WHERE "ID" = %s''', (self.tg_id,))[0]
+                data = db.fetch_data('''SELECT u.id, firstname, lastname, nickname, money_amount 
+                                        FROM users u
+                                        join balance b on u.id = b.user_id
+                                        WHERE u.id = %s''', (self.tg_id,))[0]
                 return data
             else:
                 self.create_profile()
@@ -55,4 +56,4 @@ class User:
 user = User(tg_id=123, firstname="Ivan", lastname="Ivanov", tg_nick="ivanivanov")
 
 user_data = user.fetch_user()
-print(user_data)
+ic(user_data)
