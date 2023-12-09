@@ -23,7 +23,7 @@ class User:
             query = 'CALL add_user (%s, %s, %s, %s);'
 
             user_params = (self.tg_id, self.firstname, self.lastname, self.tg_nick)
-            db.execute_query(query, user_params)
+            conn.execute_query(query, user_params)
             ic()
 
     def fetch_user(self):
@@ -32,7 +32,7 @@ class User:
         with db as conn:
             # нужно заменить SQL-запросы на процедуры
             # проверка наличия пользователя в БД
-            check_id = db.fetch_data('''
+            check_id = conn.fetch_data('''
                                         SELECT 
                                             CASE 
                                                 WHEN EXISTS (
@@ -45,7 +45,7 @@ class User:
                                             (self.tg_id,))[0]
 
             if check_id[0] != 0:
-                data = db.fetch_data('''SELECT u.id, firstname, lastname, nickname, money_amount 
+                data = conn.fetch_data('''SELECT u.id, firstname, lastname, nickname, money_amount 
                                         FROM users u
                                         join balance b on u.id = b.user_id
                                         WHERE u.id = %s''', (self.tg_id,))[0]
