@@ -65,8 +65,17 @@ class Operations:
         pass
 
     # добавление каьегории
-    def add_category(self, user_id, category):
-        pass
+    def add_categories(self, categories):
+
+        db = self.db_connect()
+
+        with db as conn:
+  
+            query = 'CALL insert_categories_for_user (%s, %s);'
+
+            user_params = (self.tg_id, categories)
+            result = conn.execute_query(query, user_params)
+            return result
     
     # изменение категории
     def change_category (self, user_id, category):
@@ -88,4 +97,4 @@ as_name = "Товары для дома"
 type_operation = 2
 
 operations_instance = Operations(tg_id=tg_id, operation_amount=operation_amount, category_id=category_id, as_name=as_name, type_operation=type_operation)
-ic(operations_instance.add_expense())
+ic(operations_instance.add_categories('Категория1,Категория2,Категория4'))
